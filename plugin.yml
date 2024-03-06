@@ -7,5 +7,5 @@ description: Allows the creation of bank notes using muli-ecomony system.
 
 permissions:
   banknotesplus.cmd:
-    description: Bank Note Perm
+    description: Allows the user to create bank notes.
     default: true
