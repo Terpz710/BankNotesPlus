@@ -36,16 +36,21 @@ class BankNotesCommand extends Command {
                 $this->economyManager->reduceMoney($sender, $amount, function($success) use ($sender, $amount) {
                     if ($success) {
                         $this->plugin->convertToBankNote($sender, $amount);
-                        $sender->sendMessage(TF::GREEN . "You have converted §f$" . $amount . " §ainto a bank note.");
+                        $message = $this->plugin->getConfig()->get("convert_success_message");
+                        $message = str_replace("{amount}", (string)$amount, $message);
+                        $sender->sendMessage($message);
                     } else {
-                        $sender->sendMessage(TF::RED . "Failed to reduce money. Please try again.");
+                        $message = $this->plugin->getConfig()->get("convert_failure_message");
+                        $sender->sendMessage($message);
                     }
                 });
             } else {
-                $sender->sendMessage(TF::RED . "Usage: /banknote {amount}");
+                $message = $this->plugin->getConfig()->get("convert_usage_message");
+                $sender->sendMessage($message);
             }
         } else {
-            $sender->sendMessage(TF::RED . "This command can only be used by players.");
+            $message = $this->plugin->getConfig()->get("convert_not_player_message");
+            $sender->sendMessage($message);
         }
         return true;
     }
