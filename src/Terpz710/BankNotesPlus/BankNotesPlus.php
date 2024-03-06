@@ -11,6 +11,7 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\VanillaItems;
 use pocketmine\plugin\PluginBase;
 use pocketmine\player\Player;
+use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
 
 use Terpz710\BankNotesPlus\Command\BankNotesCommand;
@@ -19,8 +20,12 @@ use Terpz710\BankNotesPlus\Economy\EconomyManager;
 class BankNotesPlus extends PluginBase implements Listener {
 
     private $economyManager;
+    private $config;
 
     public function onEnable(): void {
+        $this->saveDefaultConfig();
+        $this->config = new Config($this->getDataFolder() . "config.yml", Config::YAML);
+        
         $this->economyManager = new EconomyManager($this);
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("banknote", new BankNotesCommand($this, $this->economyManager));
@@ -36,9 +41,12 @@ class BankNotesPlus extends PluginBase implements Listener {
             $player->getInventory()->setItemInHand($item);
             $this->economyManager->addMoney($player, $amount, function($success) use ($player, $amount) {
                 if ($success) {
-                    $player->sendMessage(TF::GREEN . "You have claimed §f$" . $amount . " §afrom the bank note.");
+                    $message = $this->config->get("claim_message");
+                    $message = str_replace("{amount}", (string)$amount, $message);
+                    $player->sendMessage($message);
                 } else {
-                    $player->sendMessage(TF::RED . "Failed to add money. Please try again.");
+                    $message = $this->config->get("failure_message");
+                    $player->sendMessage($message);
                 }
             });
         }
@@ -46,11 +54,15 @@ class BankNotesPlus extends PluginBase implements Listener {
 
     public function convertToBankNote(Player $player, int $amount): void {
         $bankNote = VanillaItems::PAPER();
-        $bankNote->setCustomName(TF::GOLD . "$" . $amount . " Bank Note");
-        $bankNote->setLore([
-            "Value: $" . $amount,
-            "Right-click to redeem"
-        ]);
+        $bankNote->setCustomName(str_replace("{amount}", (string)$amount, $this->config->get("bank_note_name")));
+        $lore = [
+            $this->config->get("bank_note_value_line"),
+            $this->config->get("bank_note_lore")
+        ];
+        $lore = array_map(function($line) use ($amount) {
+            return str_replace("{amount}", (string)$amount, $line);
+        }, $lore);
+        $bankNote->setLore($lore);
         $bankNote->getNamedTag()->setInt("Amount", $amount);
         $enchantment = new EnchantmentInstance(VanillaEnchantments::FORTUNE(), 3);
         $bankNote->addEnchantment($enchantment);
