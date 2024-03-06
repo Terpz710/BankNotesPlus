@@ -1,0 +1,25 @@
+# Made by Terpz710
+
+# Message displayed when a player successfully claims money from a bank note
+claim_message: "You have claimed §a${amount} §ffrom the bank note!"
+
+# Message displayed when adding money from a bank note fails
+failure_message: "§cFailed to add money... Please let a §estaff§c know!"
+
+# Message displayed when a player successfully converts money into a bank note
+convert_success_message: "You have converted §a${amount} §finto a bank note!"
+
+# Message displayed when converting money into a bank note fails(not enough money)
+convert_failure_message: "§cNot enough money to convert to a bank note!"
+
+# Message displayed when the usage of the /banknote command is incorrect
+convert_usage_message: "§cUsage: /banknote <amount>"
+
+# Message displayed when a non-player tries to use the /banknote command
+convert_not_player_message: "This command can only be used by players!"
+
+# Name of the bank note item
+bank_note_name: "§r§a${amount}§f Bank Note"
+# Lore lines for the bank note item
+bank_note_value_line: "§r§7Value: §a${amount}"
+bank_note_lore: "§r§eRight-click to redeem"
