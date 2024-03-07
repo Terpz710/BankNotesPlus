@@ -18,6 +18,8 @@ convert_usage_message: "§cUsage: /banknote <amount>"
 # Message displayed when a non-player tries to use the /banknote command
 convert_not_player_message: "This command can only be used by players!"
 
+# Bank note item
+bank_note_item: "PAPER"
 # Name of the bank note item
 bank_note_name: "§r§a${amount}§f Bank Note"
 # Lore lines for the bank note item
