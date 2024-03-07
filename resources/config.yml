@@ -19,6 +19,7 @@ convert_usage_message: "§cUsage: /banknote <amount>"
 convert_not_player_message: "This command can only be used by players!"
 
 # Bank note item
+# It is recommended NOT to use blocks or items that can be placed as bank notes. This can create a dupe for that block/ItemBlock...
 bank_note_item: "PAPER"
 # Name of the bank note item
 bank_note_name: "§r§a${amount}§f Bank Note"
