@@ -34,22 +34,25 @@ class BankNotesPlus extends PluginBase implements Listener {
     public function onPlayerInteract(PlayerInteractEvent $event): void {
         $player = $event->getPlayer();
         $item = $event->getItem();
+        $action = $event->getAction();
 
-        if ($item->getNamedTag()->getTag("Amount") !== null) {
-            $amount = $item->getNamedTag()->getInt("Amount");
-            $item->setCount($item->getCount() - 1);
-            $player->getInventory()->setItemInHand($item);
-            $this->economyManager->addMoney($player, $amount, function($success) use ($player, $amount) {
-                if ($success) {
-                    $message = $this->config->get("claim_message");
-                    $message = str_replace("{amount}", (string)$amount, $message);
-                    $player->sendMessage($message);
-                } else {
-                    $message = $this->config->get("failure_message");
-                    $player->sendMessage($message);
-                    $event->cancel();
-                }
-            });
+        if ($action === PlayerInteractEvent::LEFT_CLICK_BLOCK || $action === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            if ($item->getNamedTag()->getTag("Amount") !== null) {
+                $amount = $item->getNamedTag()->getInt("Amount");
+                $item->setCount($item->getCount() - 1);
+                $player->getInventory()->setItemInHand($item);
+                $this->economyManager->addMoney($player, $amount, function($success) use ($player, $amount) {
+                    if ($success) {
+                        $message = $this->config->get("claim_message");
+                        $message = str_replace("{amount}", (string)$amount, $message);
+                        $player->sendMessage($message);
+                    } else {
+                        $message = $this->config->get("failure_message");
+                        $player->sendMessage($message);
+                        $event->cancel();
+                    }
+                });
+            }
         }
     }
 
