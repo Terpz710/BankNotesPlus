@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Terpz710\BankNotesPlus;
 
-use pocketmine\item\enchantment\EnchantmentInstance;
-use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\item\VanillaItems;
+use pocketmine\item\StringToItemParser;
+use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\plugin\PluginBase;
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
@@ -53,7 +53,7 @@ class BankNotesPlus extends PluginBase implements Listener {
     }
 
     public function convertToBankNote(Player $player, int $amount): void {
-        $bankNote = VanillaItems::PAPER();
+        $bankNote = StringToItemParser::getInstance()->parse($this->config->get("bank_note_item"));
         $bankNote->setCustomName(str_replace("{amount}", (string)$amount, $this->config->get("bank_note_name")));
         $lore = [
             $this->config->get("bank_note_value_line"),
