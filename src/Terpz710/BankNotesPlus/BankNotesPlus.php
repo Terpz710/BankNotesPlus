@@ -47,6 +47,7 @@ class BankNotesPlus extends PluginBase implements Listener {
                 } else {
                     $message = $this->config->get("failure_message");
                     $player->sendMessage($message);
+                    $event->cancel();
                 }
             });
         }
