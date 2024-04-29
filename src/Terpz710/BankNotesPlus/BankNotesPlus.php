@@ -6,6 +6,7 @@ namespace Terpz710\BankNotesPlus;
 
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
@@ -57,6 +58,11 @@ class BankNotesPlus extends PluginBase implements Listener {
     }
 
     public function convertToBankNote(Player $player, int $amount): void {
+        $bankNote = $this->getBankNote($amount);
+        $player->getInventory()->addItem($bankNote);
+    }
+
+    public function getBankNote(int $amount): ?Item {
         $bankNote = StringToItemParser::getInstance()->parse($this->config->get("bank_note_item"));
         $bankNote->setCustomName(str_replace("{amount}", (string)$amount, $this->config->get("bank_note_name")));
         $lore = [
@@ -70,6 +76,6 @@ class BankNotesPlus extends PluginBase implements Listener {
         $bankNote->getNamedTag()->setInt("Amount", $amount);
         $enchantment = new EnchantmentInstance(VanillaEnchantments::FORTUNE(), 3);
         $bankNote->addEnchantment($enchantment);
-        $player->getInventory()->addItem($bankNote);
+        return $bankNote;
     }
 }
