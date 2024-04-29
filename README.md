@@ -11,6 +11,17 @@ Of course this plugin works as a normal bank notes plugin so do as you will.
 
 - EnderKits
 
+# API
+**Get the banknote instance**
+```
+$bankNotesPlus = $pluginManager->getPlugin("BankNotesPlus");
+```
+**How to get the bank note**
+```
+$amount = 100;
+
+$bankNoteItem = $bankNotesPlus->getBankNote($amount);
+```
 # Report a bug
 
 Need to report a bug?
