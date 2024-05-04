@@ -6,13 +6,15 @@ namespace Terpz710\BankNotesPlus\Command;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\plugin\PluginOwned;
+use pocketmine\plugin\Plugin;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
 use Terpz710\BankNotesPlus\BankNotesPlus;
 use Terpz710\BankNotesPlus\Economy\EconomyManager;
 
-class BankNotesCommand extends Command {
+class BankNotesCommand extends Command implements PluginOwned {
 
     private $plugin;
     private $economyManager;
@@ -22,6 +24,10 @@ class BankNotesCommand extends Command {
         $this->setPermission("banknotesplus.cmd");
         $this->plugin = $plugin;
         $this->economyManager = $economyManager;
+    }
+
+    public function getOwningPlugin(): Plugin {
+        return $this->plugin;
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args) {
