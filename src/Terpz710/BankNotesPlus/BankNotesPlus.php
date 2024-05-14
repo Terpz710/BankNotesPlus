@@ -28,7 +28,7 @@ class BankNotesPlus extends PluginBase implements Listener {
         
         $this->economyManager = new EconomyManager($this);
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getCommandMap()->register("banknote", new BNCommand($this, $this->economyManager));
+        $this->getServer()->getCommandMap()->register("BankNotesPlus", new BNCommand($this, $this->economyManager));
     }
 
     public function onPlayerInteract(PlayerInteractEvent $event): void {
