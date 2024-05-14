@@ -13,9 +13,8 @@ use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\plugin\PluginBase;
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
-use pocketmine\utils\TextFormat as TF;
 
-use Terpz710\BankNotesPlus\Command\BankNotesCommand;
+use Terpz710\BankNotesPlus\Command\BNCommand;
 use Terpz710\BankNotesPlus\Economy\EconomyManager;
 
 class BankNotesPlus extends PluginBase implements Listener {
@@ -29,7 +28,7 @@ class BankNotesPlus extends PluginBase implements Listener {
         
         $this->economyManager = new EconomyManager($this);
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getCommandMap()->register("banknote", new BankNotesCommand($this, $this->economyManager));
+        $this->getServer()->getCommandMap()->register("banknote", new BNCommand($this, $this->economyManager));
     }
 
     public function onPlayerInteract(PlayerInteractEvent $event): void {
