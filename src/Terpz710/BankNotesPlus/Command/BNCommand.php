@@ -9,12 +9,11 @@ use pocketmine\command\CommandSender;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat as TF;
 
 use Terpz710\BankNotesPlus\BankNotesPlus;
 use Terpz710\BankNotesPlus\Economy\EconomyManager;
 
-class BankNotesCommand extends Command implements PluginOwned {
+class BNCommand extends Command implements PluginOwned {
 
     private $plugin;
     private $economyManager;
