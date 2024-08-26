@@ -8,26 +8,28 @@ use Closure;
 use pocketmine\player\Player;
 use pocketmine\plugin\Plugin;
 
-use cooldogedev\BedrockEconomy\api\legacy\ClosureContext;
+use onebone\economyapi\EconomyAPI;
+use cooldogedev\BedrockEconomy\api\type\ClosureAPI;
 use cooldogedev\BedrockEconomy\BedrockEconomy;
 use cooldogedev\BedrockEconomy\api\BedrockEconomyAPI;
-use cooldogedev\BedrockEconomy\api\type\LegacyAPI;
-use onebone\economyapi\EconomyAPI;
+use cooldogedev\BedrockEconomy\currency\Currency;
+use cooldogedev\BedrockEconomy\database\cache\GlobalCache;
+
 use Terpz710\BankNotesPlus\BankNotesPlus;
 
 class EconomyManager {
-    /** @var Plugin|null $eco */
-    private ?Plugin $eco;
-    /** @var LegacyAPI|null $api */
-    private ?LegacyAPI $api;
-    /** @var BankNotesPlus $plugin */
+
+    private $eco;
+    private ?ClosureAPI $api;
+    private Currency $currency;
     private BankNotesPlus $plugin;
 
     public function __construct(BankNotesPlus $plugin) {
         $this->plugin = $plugin;
-        $manager = $plugin->getServer()->getPluginManager();
+        $manager = $this->plugin->getServer()->getPluginManager();
         $this->eco = $manager->getPlugin("EconomyAPI") ?? $manager->getPlugin("BedrockEconomy") ?? null;
-        $this->api = BedrockEconomyAPI::legacy();
+        $this->api = BedrockEconomyAPI::CLOSURE();
+        $this->currency = BedrockEconomy::getInstance()->getCurrency();
         unset($manager);
     }
 
@@ -39,14 +41,12 @@ class EconomyManager {
                 $callback($money);
                 break;
             case "BedrockEconomy":
-                $this->api->getPlayerBalance($player->getName(), ClosureContext::create(static function(?int $balance) use($callback) : void {
-                    $callback($balance ?? 0);
-                }));
+                $entry = GlobalCache::ONLINE()->get($player->getName());
+                $callback($entry ? (float)"{$entry->amount}.{$entry->decimals}" : (float)"{$this->currency->defaultAmount}.{$this->currency->defaultDecimals}");
                 break;
             default:
-                $this->api->getPlayerBalance($player->getName(), ClosureContext::create(static function(?int $balance) use($callback) : void {
-                    $callback($balance ?? 0);
-                }));
+                $entry = GlobalCache::ONLINE()->get($player->getName());
+                $callback($entry ? (float)"{$entry->amount}.{$entry->decimals}" : (float)"{$this->currency->defaultAmount}.{$this->currency->defaultDecimals}");
         }
     }
 
@@ -60,9 +60,15 @@ class EconomyManager {
                 $callback($this->eco->reduceMoney($player->getName(), $amount) === EconomyAPI::RET_SUCCESS);
                 break;
             case "BedrockEconomy":
-                $this->api->subtractFromPlayerBalance($player->getName(), (int) ceil($amount), ClosureContext::create(static function(bool $success) use($callback) : void {
-                    $callback($success);
-                }));
+                $decimals = (int)(explode('.', strval($amount))[1] ?? 0);
+                $this->api->subtract(
+                    $player->getXuid(),
+                    $player->getName(),
+                    (int)$amount,
+                    $decimals,
+                    fn () => $callback(true),
+                    fn () => $callback(false)
+                );
                 break;
         }
     }
@@ -77,9 +83,15 @@ class EconomyManager {
                 $callback($this->eco->addMoney($player->getName(), $amount, EconomyAPI::RET_SUCCESS));
                 break;
             case "BedrockEconomy":
-                $this->api->addToPlayerBalance($player->getName(), (int) ceil($amount), ClosureContext::create(static function(bool $success) use($callback) : void {
-                    $callback($success);
-                }));
+                $decimals = (int)(explode('.', strval($amount))[1] ?? 0);
+                $this->api->add(
+                    $player->getXuid(),
+                    $player->getName(),
+                    (int)$amount,
+                    $decimals,
+                    fn () => $callback(true),
+                    fn () => $callback(false)
+                );
                 break;
         }
     }
