@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Terpz710\Sell\Economy;
+namespace Terpz710\BankNotesPlus\Economy;
 
 use Closure;
 use pocketmine\player\Player;
@@ -14,16 +14,16 @@ use cooldogedev\BedrockEconomy\api\BedrockEconomyAPI;
 use cooldogedev\BedrockEconomy\currency\Currency;
 use cooldogedev\BedrockEconomy\database\cache\GlobalCache;
 
-use Terpz710\Sell\Main;
+use Terpz710\BankNotesPlus\BankNotesPlus;
 
 class EconomyManager {
 
     private $eco;
     private ?ClosureAPI $api;
     private Currency $currency;
-    private Main $plugin;
+    private BankNotesPlus $plugin;
 
-    public function __construct(Main $plugin) {
+    public function __construct(BankNotesPlus $plugin) {
         $this->plugin = $plugin;
         $manager = $this->plugin->getServer()->getPluginManager();
         $this->eco = $manager->getPlugin("EconomyAPI") ?? $manager->getPlugin("BedrockEconomy") ?? null;
