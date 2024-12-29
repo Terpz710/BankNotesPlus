@@ -14,13 +14,15 @@ Of course this plugin works as a normal bank notes plugin so do as you will.
 # API
 **Get the banknote instance**
 ```
-$bankNotesPlus = $pluginManager->getPlugin("BankNotesPlus");
+$bankNotesPlus = BankNotesPlus::getInstance();
 ```
 **How to get the bank note**
 ```
+$player is an instance of Player::class
+
 $amount = 100;
 
-$bankNoteItem = $bankNotesPlus->getBankNote($amount);
+$bankNoteItem = $bankNotesPlus->convertToBankNote($player, $amount);
 ```
 # Report a bug
 
