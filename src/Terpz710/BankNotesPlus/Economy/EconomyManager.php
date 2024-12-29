@@ -27,8 +27,8 @@ final class EconomyManager {
     private ?Currency $currency;
     private BankNotesPlus $plugin;
 
-    public function __construct(BankNotesPlus $plugin) {
-        $this->plugin = $plugin;
+    public function __construct() {
+        $this->plugin = BankNotesPlus::getInstance();
         $manager = $plugin->getServer()->getPluginManager();
         $this->eco = $manager->getPlugin("EconomyAPI") ?? $manager->getPlugin("BedrockEconomy") ?? null;
 
