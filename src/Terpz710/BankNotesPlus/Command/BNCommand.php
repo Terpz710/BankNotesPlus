@@ -24,6 +24,7 @@ class BNCommand extends Command implements PluginOwned {
         parent::__construct("banknote");
         $this->setDescription("Convert in-game money into bank notes");
         $this->setUsage("/banknote <amount>");
+        $this->setAliases(["bn", "note"]);
         $this->setPermission("banknotesplus.cmd");
         
         $this->plugin = BankNotesPlus::getInstance();
