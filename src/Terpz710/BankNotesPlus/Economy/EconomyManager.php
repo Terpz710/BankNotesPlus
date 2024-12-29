@@ -32,7 +32,7 @@ final class EconomyManager {
 
     public function __construct() {
         $this->plugin = BankNotesPlus::getInstance();
-        $manager = $plugin->getServer()->getPluginManager();
+        $manager = $this->plugin->getServer()->getPluginManager();
         $this->eco = $manager->getPlugin("EconomyAPI") ?? $manager->getPlugin("BedrockEconomy") ?? null;
 
         if ($this->eco instanceof BedrockEconomy) {
