@@ -5,5 +5,5 @@ branches:
 projects:
   BankNotesPlus:
     path: ""
-    lint: false
+    lint: true
 ...
