@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace wavycraft\antivoid\economy;
+namespace Terpz710\BankNotesPlus\Economy;
 
 use Closure;
 
