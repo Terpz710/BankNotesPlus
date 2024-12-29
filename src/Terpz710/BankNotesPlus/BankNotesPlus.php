@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Terpz710\BankNotesPlus;
 
+use pocketmine\plugin\PluginBase;
+
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
+
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
-use pocketmine\plugin\PluginBase;
-use pocketmine\player\Player;
-use pocketmine\utils\Config;
+
+use pocketmine\player\Player
 
 use Terpz710\BankNotesPlus\Command\BNCommand;
 use Terpz710\BankNotesPlus\Economy\EconomyManager;
@@ -22,16 +24,24 @@ class BankNotesPlus extends PluginBase implements Listener {
     private $economyManager;
     private $config;
 
-    public function onEnable(): void {
-        $this->saveDefaultConfig();
-        $this->config = new Config($this->getDataFolder() . "config.yml", Config::YAML);
+    protected static $instance;
+
+    protected function onLoad() : void {
+        self::$instance = $this;
+    }
         
-        $this->economyManager = new EconomyManager($this);
+    protected function onEnable() : void {
+        $this->saveDefaultConfig();
+        $this->economyManager = new EconomyManager();
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getCommandMap()->register("BankNotesPlus", new BNCommand($this, $this->economyManager));
+        $this->getServer()->getCommandMap()->register("BankNotesPlus", new BNCommand());
     }
 
-    public function onPlayerInteract(PlayerInteractEvent $event): void {
+    public static function getInstance() : self{
+        return self::$instance = $this;
+    }
+
+    public function onPlayerInteract(PlayerInteractEvent $event) : void{
         $player = $event->getPlayer();
         $item = $event->getItem();
         $action = $event->getAction();
@@ -43,11 +53,11 @@ class BankNotesPlus extends PluginBase implements Listener {
                 $player->getInventory()->setItemInHand($item);
                 $this->economyManager->addMoney($player, $amount, function($success) use ($player, $amount) {
                     if ($success) {
-                        $message = $this->config->get("claim_message");
+                        $message = $this->getConfig()->get("claim_message");
                         $message = str_replace("{amount}", (string)$amount, $message);
                         $player->sendMessage($message);
                     } else {
-                        $message = $this->config->get("failure_message");
+                        $message = $this->getConfig()->get("failure_message");
                         $player->sendMessage($message);
                         $event->cancel();
                     }
@@ -56,17 +66,17 @@ class BankNotesPlus extends PluginBase implements Listener {
         }
     }
 
-    public function convertToBankNote(Player $player, int $amount): void {
+    public function convertToBankNote(Player $player, int $amount) : void{
         $bankNote = $this->getBankNote($amount);
         $player->getInventory()->addItem($bankNote);
     }
 
-    public function getBankNote(int $amount): ?Item {
-        $bankNote = StringToItemParser::getInstance()->parse($this->config->get("bank_note_item"));
-        $bankNote->setCustomName(str_replace("{amount}", (string)$amount, $this->config->get("bank_note_name")));
+    public function getBankNote(int $amount) : ?Item{
+        $bankNote = StringToItemParser::getInstance()->parse($this->getConfig()->get("bank_note_item"));
+        $bankNote->setCustomName(str_replace("{amount}", (string)$amount, $this->getConfig()->get("bank_note_name")));
         $lore = [
-            $this->config->get("bank_note_value_line"),
-            $this->config->get("bank_note_lore")
+            $this->getConfig()->get("bank_note_value_line"),
+            $this->getConfig()->get("bank_note_lore")
         ];
         $lore = array_map(function($line) use ($amount) {
             return str_replace("{amount}", (string)$amount, $line);
