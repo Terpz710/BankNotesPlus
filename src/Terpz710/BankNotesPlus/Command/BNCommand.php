@@ -6,8 +6,10 @@ namespace Terpz710\BankNotesPlus\Command;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+
 use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
+
 use pocketmine\player\Player;
 
 use Terpz710\BankNotesPlus\BankNotesPlus;
@@ -18,11 +20,14 @@ class BNCommand extends Command implements PluginOwned {
     private $plugin;
     private $economyManager;
 
-    public function __construct(BankNotesPlus $plugin, EconomyManager $economyManager) {
-        parent::__construct("banknote", "Convert in-game money into bank notes", "/banknote {amount}");
+    public function __construct() {
+        parent::__construct("banknote");
+        $this->setDescription("Convert in-game money into bank notes");
+        $this->setUsage("/banknote <amount>");
         $this->setPermission("banknotesplus.cmd");
-        $this->plugin = $plugin;
-        $this->economyManager = $economyManager;
+        
+        $this->plugin = BankNotesPlus::getInstance();
+        $this->economyManager = EconomyManager::getInstance();
     }
 
     public function getOwningPlugin(): Plugin {
