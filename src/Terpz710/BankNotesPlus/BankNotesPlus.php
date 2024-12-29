@@ -50,7 +50,7 @@ class BankNotesPlus extends PluginBase implements Listener {
                 $amount = $item->getNamedTag()->getInt("Amount");
                 $item->setCount($item->getCount() - 1);
                 $player->getInventory()->setItemInHand($item);
-                $this->economyManager->addMoney($player, $amount, function($success) use ($player, $amount) {
+                $this->economyManager->addMoney($player, $amount, function($success) use ($player, $amount, $event) {
                     if ($success) {
                         $message = $this->getConfig()->get("claim_message");
                         $message = str_replace("{amount}", (string)$amount, $message);
