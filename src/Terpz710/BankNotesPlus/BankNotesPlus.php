@@ -22,7 +22,6 @@ use Terpz710\BankNotesPlus\Economy\EconomyManager;
 class BankNotesPlus extends PluginBase implements Listener {
 
     private $economyManager;
-    private $config;
 
     protected static $instance;
 
@@ -38,7 +37,7 @@ class BankNotesPlus extends PluginBase implements Listener {
     }
 
     public static function getInstance() : self{
-        return self::$instance = $this;
+        return self::$instance;
     }
 
     public function onPlayerInteract(PlayerInteractEvent $event) : void{
