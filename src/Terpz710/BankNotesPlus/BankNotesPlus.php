@@ -14,7 +14,7 @@ use pocketmine\item\StringToItemParser;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 
-use pocketmine\player\Player
+use pocketmine\player\Player;
 
 use Terpz710\BankNotesPlus\Command\BNCommand;
 use Terpz710\BankNotesPlus\Economy\EconomyManager;
