@@ -12,6 +12,9 @@ use pocketmine\plugin\Plugin;
 
 use pocketmine\utils\SingletonTrait;
 
+use terpz710\gems\Gems;
+use terpz710\gems\manager\GemManager;
+
 use onebone\economyapi\EconomyAPI;
 
 use cooldogedev\BedrockEconomy\api\type\ClosureAPI;
@@ -33,7 +36,7 @@ final class EconomyManager {
     public function __construct() {
         $this->plugin = BankNotesPlus::getInstance();
         $manager = $this->plugin->getServer()->getPluginManager();
-        $this->eco = $manager->getPlugin("EconomyAPI") ?? $manager->getPlugin("BedrockEconomy") ?? null;
+        $this->eco = $manager->getPlugin()->("Gems") ?? $manager->getPlugin("EconomyAPI") ?? $manager->getPlugin("BedrockEconomy") ?? null;
 
         if ($this->eco instanceof BedrockEconomy) {
             $this->api = BedrockEconomyAPI::CLOSURE();
@@ -46,8 +49,12 @@ final class EconomyManager {
         unset($manager);
     }
 
-    public function getMoney(Player $player, Closure $callback): void {
-        if ($this->eco instanceof EconomyAPI) {
+    public function getMoney(Player $player, Closure $callback) : void{
+        if ($this->eco instanceof Gems) {
+            $balance = GemManager::getInstance()->seeGemBalance($player);
+            assert(is_float($balance));
+            $callback($balance);
+        } elseif ($this->eco instanceof EconomyAPI) {
             $money = $this->eco->myMoney($player->getName());
             assert(is_float($money));
             $callback($money);
@@ -59,13 +66,15 @@ final class EconomyManager {
         }
     }
 
-    public function reduceMoney(Player $player, int $amount, Closure $callback): void {
+    public function reduceMoney(Player $player, int $amount, Closure $callback) : void{
         if ($this->eco === null) {
             $this->plugin->getLogger()->warning("You don't have an Economy plugin");
             return;
         }
 
-        if ($this->eco instanceof EconomyAPI) {
+        if ($this->eco instanceof Gems) {
+            $callback(GemManager::getInstance()->removeGem($player, $amount));
+        } elseif ($this->eco instanceof EconomyAPI) {
             $callback($this->eco->reduceMoney($player->getName(), $amount) === EconomyAPI::RET_SUCCESS);
         } elseif ($this->eco instanceof BedrockEconomy) {
             $decimals = (int)(explode('.', strval($amount))[1] ?? 0);
@@ -84,13 +93,15 @@ final class EconomyManager {
         }
     }
 
-    public function addMoney(Player $player, int $amount, Closure $callback): void {
+    public function addMoney(Player $player, int $amount, Closure $callback) : void{
         if ($this->eco === null) {
             $this->plugin->getLogger()->warning("You don't have an Economy plugin");
             return;
         }
 
-        if ($this->eco instanceof EconomyAPI) {
+        if ($this->eco instanceof Gems) {
+            $callback(GemManager::getInstance()->giveGem($player, $amount));
+        } elseif ($this->eco instanceof EconomyAPI) {
             $callback($this->eco->addMoney($player->getName(), $amount) === EconomyAPI::RET_SUCCESS);
         } elseif ($this->eco instanceof BedrockEconomy) {
             $decimals = (int)(explode('.', strval($amount))[1] ?? 0);
