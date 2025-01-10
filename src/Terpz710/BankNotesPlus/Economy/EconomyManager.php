@@ -12,9 +12,6 @@ use pocketmine\plugin\Plugin;
 
 use pocketmine\utils\SingletonTrait;
 
-use terpz710\gems\Gems;
-use terpz710\gems\manager\GemManager;
-
 use onebone\economyapi\EconomyAPI;
 
 use cooldogedev\BedrockEconomy\api\type\ClosureAPI;
@@ -50,11 +47,7 @@ final class EconomyManager {
     }
 
     public function getMoney(Player $player, Closure $callback) : void{
-        if ($this->eco instanceof Gems) {
-            $balance = GemManager::getInstance()->seeGemBalance($player);
-            assert(is_float($balance));
-            $callback($balance);
-        } elseif ($this->eco instanceof EconomyAPI) {
+        if ($this->eco instanceof EconomyAPI) {
             $money = $this->eco->myMoney($player->getName());
             assert(is_float($money));
             $callback($money);
@@ -72,9 +65,7 @@ final class EconomyManager {
             return;
         }
 
-        if ($this->eco instanceof Gems) {
-            $callback(GemManager::getInstance()->removeGem($player, $amount));
-        } elseif ($this->eco instanceof EconomyAPI) {
+        if ($this->eco instanceof EconomyAPI) {
             $callback($this->eco->reduceMoney($player->getName(), $amount) === EconomyAPI::RET_SUCCESS);
         } elseif ($this->eco instanceof BedrockEconomy) {
             $decimals = (int)(explode('.', strval($amount))[1] ?? 0);
@@ -99,9 +90,7 @@ final class EconomyManager {
             return;
         }
 
-        if ($this->eco instanceof Gems) {
-            $callback(GemManager::getInstance()->giveGem($player, $amount));
-        } elseif ($this->eco instanceof EconomyAPI) {
+        if ($this->eco instanceof EconomyAPI) {
             $callback($this->eco->addMoney($player->getName(), $amount) === EconomyAPI::RET_SUCCESS);
         } elseif ($this->eco instanceof BedrockEconomy) {
             $decimals = (int)(explode('.', strval($amount))[1] ?? 0);
