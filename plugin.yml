@@ -3,10 +3,9 @@ version: 1.0.5-beta
 api: [5.0.0]
 main: Terpz710\BankNotesPlus\BankNotesPlus
 author: Terpz710
-description: Allows the creation of bank notes using muli-ecomony system.
+
 softdepend: ["EconomyAPI", "BedrockEconomy"]
 
 permissions:
   banknotesplus.cmd:
-    description: Allows the user to create bank notes.
     default: true
