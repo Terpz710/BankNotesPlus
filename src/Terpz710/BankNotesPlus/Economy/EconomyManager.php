@@ -14,11 +14,14 @@ use pocketmine\utils\SingletonTrait;
 
 use onebone\economyapi\EconomyAPI;
 
+use cooldogedev\BedrockEconomy\currency\Currency;
 use cooldogedev\BedrockEconomy\api\type\ClosureAPI;
 use cooldogedev\BedrockEconomy\api\BedrockEconomyAPI;
-use cooldogedev\BedrockEconomy\currency\Currency;
 use cooldogedev\BedrockEconomy\database\cache\GlobalCache;
+
 use cooldogedev\BedrockEconomy\BedrockEconomy;
+
+use terpz710\mineconomy\Mineconomy;
 
 use Terpz710\BankNotesPlus\BankNotesPlus;
 
@@ -29,11 +32,14 @@ final class EconomyManager {
     private ?ClosureAPI $api;
     private ?Currency $currency;
     private BankNotesPlus $plugin;
+    private ?Mineconomy $mineconomy;
 
     public function __construct() {
         $this->plugin = BankNotesPlus::getInstance();
         $manager = $this->plugin->getServer()->getPluginManager();
-        $this->eco = $manager->getPlugin("Gems") ?? $manager->getPlugin("EconomyAPI") ?? $manager->getPlugin("BedrockEconomy") ?? null;
+
+        $this->mineconomy = $manager->getPlugin("Mineconomy") instanceof Mineconomy ? $manager->getPlugin("Mineconomy") : null;
+        $this->eco = $manager->getPlugin("EconomyAPI") ?? $manager->getPlugin("BedrockEconomy") ?? null;
 
         if ($this->eco instanceof BedrockEconomy) {
             $this->api = BedrockEconomyAPI::CLOSURE();
@@ -46,8 +52,10 @@ final class EconomyManager {
         unset($manager);
     }
 
-    public function getMoney(Player $player, Closure $callback) : void{
-        if ($this->eco instanceof EconomyAPI) {
+    public function getMoney(Player $player, Closure $callback): void {
+        if ($this->mineconomy !== null) {
+            $callback($this->mineconomy->getBalance($player) ?? 0.0);
+        } elseif ($this->eco instanceof EconomyAPI) {
             $money = $this->eco->myMoney($player->getName());
             assert(is_float($money));
             $callback($money);
@@ -59,13 +67,14 @@ final class EconomyManager {
         }
     }
 
-    public function reduceMoney(Player $player, int $amount, Closure $callback) : void{
-        if ($this->eco === null) {
+    public function reduceMoney(Player $player, int $amount, Closure $callback): void {
+        if ($this->mineconomy !== null) {
+            $this->mineconomy->removeFunds($player, $amount);
+            $callback(true);
+        } elseif ($this->eco === null) {
             $this->plugin->getLogger()->warning("You don't have an Economy plugin");
             return;
-        }
-
-        if ($this->eco instanceof EconomyAPI) {
+        } elseif ($this->eco instanceof EconomyAPI) {
             $callback($this->eco->reduceMoney($player->getName(), $amount) === EconomyAPI::RET_SUCCESS);
         } elseif ($this->eco instanceof BedrockEconomy) {
             $decimals = (int)(explode('.', strval($amount))[1] ?? 0);
@@ -74,23 +83,24 @@ final class EconomyManager {
                 $player->getName(),
                 (int)$amount,
                 $decimals,
-                function() use ($callback) {
+                function () use ($callback) {
                     $callback(true);
                 },
-                function() use ($callback) {
+                function () use ($callback) {
                     $callback(false);
                 }
             );
         }
     }
 
-    public function addMoney(Player $player, int $amount, Closure $callback) : void{
-        if ($this->eco === null) {
+    public function addMoney(Player $player, int $amount, Closure $callback): void {
+        if ($this->mineconomy !== null) {
+            $this->mineconomy->addFunds($player, $amount);
+            $callback(true);
+        } elseif ($this->eco === null) {
             $this->plugin->getLogger()->warning("You don't have an Economy plugin");
             return;
-        }
-
-        if ($this->eco instanceof EconomyAPI) {
+        } elseif ($this->eco instanceof EconomyAPI) {
             $callback($this->eco->addMoney($player->getName(), $amount) === EconomyAPI::RET_SUCCESS);
         } elseif ($this->eco instanceof BedrockEconomy) {
             $decimals = (int)(explode('.', strval($amount))[1] ?? 0);
@@ -99,10 +109,10 @@ final class EconomyManager {
                 $player->getName(),
                 (int)$amount,
                 $decimals,
-                function() use ($callback) {
+                function () use ($callback) {
                     $callback(true);
                 },
-                function() use ($callback) {
+                function () use ($callback) {
                     $callback(false);
                 }
             );
