@@ -8,7 +8,7 @@ use Closure;
 
 use pocketmine\player\Player;
 
-use pocketmine\plugin\Plugin;
+use terpz710\banknotesplus\BankNotesPlus;
 
 use onebone\economyapi\EconomyAPI;
 
@@ -17,8 +17,6 @@ use cooldogedev\BedrockEconomy\api\BedrockEconomyAPI;
 use cooldogedev\BedrockEconomy\currency\Currency;
 use cooldogedev\BedrockEconomy\database\cache\GlobalCache;
 use cooldogedev\BedrockEconomy\BedrockEconomy;
-
-use terpz710\banknotesplus\BankNotesPlus;
 
 final class EconomyManager {
 
