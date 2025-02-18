@@ -8,6 +8,8 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 
+use pocketmine\utils\TextFormat as TextColor;
+
 use terpz710\banknotesplus\economy\EconomyManager;
 
 class EventListener implements Listener {
@@ -26,10 +28,10 @@ class EventListener implements Listener {
                     if ($success) {
                         $message = BankNotesPlus::getInstance()->getConfig()->get("claim_message");
                         $message = str_replace("{amount}", (string)$amount, $message);
-                        $player->sendMessage($message);
+                        $player->sendMessage(TextColor::colorize($message));
                     } else {
                         $message = BankNotesPlus::getInstance()->getConfig()->get("failure_message");
-                        $player->sendMessage($message);
+                        $player->sendMessage(TextColor::colorize($message));
                         $event->cancel();
                     }
                 });
