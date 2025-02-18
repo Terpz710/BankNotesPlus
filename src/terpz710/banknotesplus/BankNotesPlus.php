@@ -16,6 +16,8 @@ use pocketmine\data\bedrock\EnchantmentIdMap;
 
 use pocketmine\player\Player;
 
+use pocketmine\utils\TextFormat as TextColor
+
 use terpz710\banknotesplus\command\BNCommand;
 
 class BankNotesPlus extends PluginBase {
@@ -55,9 +57,7 @@ class BankNotesPlus extends PluginBase {
         $customName = $this->getConfig()->get("bank_note_name");
         $customName = str_replace("{amount}", (string)$amount, $customName);
         $bankNote->setCustomName(TextColor::colorize($customName));
-        $lore = [
-            $this->getConfig()->get("bank_note_lore")
-        ];
+        $lore = $this->getConfig()->get("bank_note_lore");
         $lore = array_map(function($line) use ($amount) {
             return str_replace("{amount}", (string)$amount, $line);
         }, $lore);
