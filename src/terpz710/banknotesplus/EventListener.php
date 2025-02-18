@@ -41,4 +41,5 @@ class EventListener implements Listener {
         if ($event->getItem()->getNamedTag()->getTag("Amount")) {
             $event->cancel();
         }
+    }
 }
