@@ -16,7 +16,7 @@ use pocketmine\data\bedrock\EnchantmentIdMap;
 
 use pocketmine\player\Player;
 
-use pocketmine\utils\TextFormat as TextColor
+use pocketmine\utils\TextFormat as TextColor;
 
 use terpz710\banknotesplus\command\BNCommand;
 
