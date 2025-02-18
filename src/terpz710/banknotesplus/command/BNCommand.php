@@ -12,6 +12,8 @@ use pocketmine\plugin\Plugin;
 
 use pocketmine\player\Player;
 
+use pocketmine\utils\TextFormat as TextColor;
+
 use terpz710\banknotesplus\BankNotesPlus;
 use terpz710\banknotesplus\economy\EconomyManager;
 
@@ -46,19 +48,19 @@ class BNCommand extends Command implements PluginOwned {
                         $this->plugin->convertToBankNote($sender, $amount);
                         $message = $this->plugin->getConfig()->get("convert_success_message");
                         $message = str_replace("{amount}", (string)$amount, $message);
-                        $sender->sendMessage($message);
+                        $sender->sendMessage(TextColor::colorize($message));
                     } else {
                         $message = $this->plugin->getConfig()->get("convert_failure_message");
-                        $sender->sendMessage($message);
+                        $sender->sendMessage(TextColor::colorize($message));
                     }
                 });
             } else {
                 $message = $this->plugin->getConfig()->get("convert_usage_message");
-                $sender->sendMessage($message);
+                $sender->sendMessage(TextColor::colorize($message));
             }
         } else {
             $message = $this->plugin->getConfig()->get("convert_not_player_message");
-            $sender->sendMessage($message);
+            $sender->sendMessage(TextColor::colorize($message));
         }
         return true;
     }
