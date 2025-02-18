@@ -22,7 +22,7 @@ class EventListener implements Listener {
         if ($action === PlayerInteractEvent::LEFT_CLICK_BLOCK || $action === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             if ($item->getNamedTag()->getTag("Amount")) {
                 $amount = $item->getNamedTag()->getInt("Amount");
-                $item->setCount($item->setCount($item->getCount() - 1);
+                $item->setCount($item->getCount() - 1);
                 $player->getInventory()->setItemInHand($item);
                 EconomyManager::getInstance()->addMoney($player, $amount, function($success) use ($player, $amount, $event) {
                     if ($success) {
