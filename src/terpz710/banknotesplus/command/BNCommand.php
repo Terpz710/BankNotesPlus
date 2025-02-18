@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Terpz710\BankNotesPlus\Command;
+namespace terpz710\banknotesplus\command;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -12,13 +12,14 @@ use pocketmine\plugin\Plugin;
 
 use pocketmine\player\Player;
 
-use Terpz710\BankNotesPlus\BankNotesPlus;
-use Terpz710\BankNotesPlus\Economy\EconomyManager;
+use terpz710\banknotesplus\BankNotesPlus;
+use terpz710\banknotesplus\economy\EconomyManager;
 
 class BNCommand extends Command implements PluginOwned {
 
-    private $plugin;
-    private $economyManager;
+    protected BankNotesPlus $plugin;
+    
+    protected EconomyManager $economyManager;
 
     public function __construct() {
         parent::__construct("banknote");
@@ -31,11 +32,7 @@ class BNCommand extends Command implements PluginOwned {
         $this->economyManager = EconomyManager::getInstance();
     }
 
-    public function getOwningPlugin(): Plugin {
-        return $this->plugin;
-    }
-
-    public function execute(CommandSender $sender, string $commandLabel, array $args) {
+    public function execute(CommandSender $sender, string $commandLabel, array $args) : bool{
         if (!$this->testPermission($sender)) {
             return true;
         }
@@ -64,5 +61,9 @@ class BNCommand extends Command implements PluginOwned {
             $sender->sendMessage($message);
         }
         return true;
+    }
+
+    public function getOwningPlugin() : Plugin{
+        return $this->plugin;
     }
 }
