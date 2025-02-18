@@ -6,6 +6,7 @@ namespace terpz710\banknotesplus;
 
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\block\BlockPlaceEvent;
 
 use terpz710\banknotesplus\economy\EconomyManager;
 
@@ -35,4 +36,9 @@ class EventListener implements Listener {
             }
         }
     }
+
+    public function onPlace(BlockPlaceEvent $event) : void{
+        if ($event->getItem()->getNamedTag()->getTag("Amount")) {
+            $event->cancel();
+        }
 }
