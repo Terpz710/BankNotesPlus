@@ -8,6 +8,8 @@ use Closure;
 
 use pocketmine\player\Player;
 
+use pocketmine\utils\SingletonTrait;
+
 use terpz710\banknotesplus\BankNotesPlus;
 
 use onebone\economyapi\EconomyAPI;
@@ -19,6 +21,7 @@ use cooldogedev\BedrockEconomy\api\BedrockEconomyAPI;
 use cooldogedev\BedrockEconomy\database\cache\GlobalCache;
 
 final class EconomyManager {
+    use SingletonTrait;
 
     protected BankNotesPlus $plugin;
 
