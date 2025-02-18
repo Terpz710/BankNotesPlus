@@ -12,11 +12,11 @@ use terpz710\banknotesplus\BankNotesPlus;
 
 use onebone\economyapi\EconomyAPI;
 
+use cooldogedev\BedrockEconomy\BedrockEconomy;
+use cooldogedev\BedrockEconomy\currency\Currency;
 use cooldogedev\BedrockEconomy\api\type\ClosureAPI;
 use cooldogedev\BedrockEconomy\api\BedrockEconomyAPI;
-use cooldogedev\BedrockEconomy\currency\Currency;
 use cooldogedev\BedrockEconomy\database\cache\GlobalCache;
-use cooldogedev\BedrockEconomy\BedrockEconomy;
 
 final class EconomyManager {
 
