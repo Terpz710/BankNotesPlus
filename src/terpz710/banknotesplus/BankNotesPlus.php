@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Terpz710\BankNotesPlus;
+namespace terpz710\banknotesplus;
 
 use pocketmine\plugin\PluginBase;
 
@@ -11,29 +11,37 @@ use pocketmine\event\player\PlayerInteractEvent;
 
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
+use pocketmine\item\enchantment\ItemFlags;
+use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\enchantment\EnchantmentInstance;
-use pocketmine\item\enchantment\VanillaEnchantments;
+
+use pocketmine\data\bedrock\EnchantmentIdMap;
 
 use pocketmine\player\Player;
 
-use Terpz710\BankNotesPlus\Command\BNCommand;
-use Terpz710\BankNotesPlus\Economy\EconomyManager;
+use terpz710\banknotesplus\command\BNCommand;
 
-class BankNotesPlus extends PluginBase implements Listener {
+class BankNotesPlus extends PluginBase {
 
-    private $economyManager;
+    protected static self $instance;
 
-    protected static $instance;
+    public const FAKE_ENCH_ID = -1;
 
-    protected function onLoad() : void {
+    protected function onLoad() : void{
         self::$instance = $this;
     }
         
-    protected function onEnable() : void {
+    protected function onEnable() : void{
         $this->saveDefaultConfig();
-        $this->economyManager = new EconomyManager();
-        $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
+        
         $this->getServer()->getCommandMap()->register("BankNotesPlus", new BNCommand());
+
+        EnchantmentIdMap::getInstance()->register(
+            self::FAKE_ENCH_ID,
+            new Enchantment("Glow", 1, ItemFlags::ALL, ItemFlags::NONE, 1)
+        );
     }
 
     public static function getInstance() : self{
@@ -46,7 +54,7 @@ class BankNotesPlus extends PluginBase implements Listener {
         $action = $event->getAction();
 
         if ($action === PlayerInteractEvent::LEFT_CLICK_BLOCK || $action === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            if ($item->getNamedTag()->getTag("Amount") !== null) {
+            if ($item->getNamedTag()->getTag("Amount")) {
                 $amount = $item->getNamedTag()->getInt("Amount");
                 $item->setCount($item->getCount() - 1);
                 $player->getInventory()->setItemInHand($item);
@@ -70,7 +78,7 @@ class BankNotesPlus extends PluginBase implements Listener {
         $player->getInventory()->addItem($bankNote);
     }
 
-    public function getBankNote(int $amount) : ?Item{
+    private function getBankNote(int $amount) : ?Item{
         $bankNote = StringToItemParser::getInstance()->parse($this->getConfig()->get("bank_note_item"));
         $bankNote->setCustomName(str_replace("{amount}", (string)$amount, $this->getConfig()->get("bank_note_name")));
         $lore = [
@@ -82,8 +90,7 @@ class BankNotesPlus extends PluginBase implements Listener {
         }, $lore);
         $bankNote->setLore($lore);
         $bankNote->getNamedTag()->setInt("Amount", $amount);
-        $enchantment = new EnchantmentInstance(VanillaEnchantments::FORTUNE(), 3);
-        $bankNote->addEnchantment($enchantment);
+        $bankNote->addEnchantment(new EnchantmentInstance(EnchantmentIdMap::getInstance()->fromId(self::FAKE_ENCH_ID), 1));
         return $bankNote;
     }
 }
