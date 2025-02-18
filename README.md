@@ -13,7 +13,10 @@ Of course this plugin works as a normal bank notes plugin so do as you will.
 
 # API
 **Get the banknote instance**
-```
+```php
+/* Import this class **/
+use terpz710\banknotesplus\BankNotesPlus;
+
 $bankNotesPlus = BankNotesPlus::getInstance();
 ```
 **How to get the bank note**
