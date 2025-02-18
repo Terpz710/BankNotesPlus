@@ -20,7 +20,7 @@ use terpz710\banknotesplus\BankNotesPlus;
 $bankNotesPlus = BankNotesPlus::getInstance();
 ```
 **How to get the bank note**
-```
+```php
 $player is an instance of Player::class
 
 $amount = 100;
