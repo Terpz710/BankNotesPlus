@@ -10,6 +10,8 @@ use pocketmine\player\Player;
 
 use pocketmine\utils\SingletonTrait;
 
+use pocketmine\plugin\Plugin;
+
 use terpz710\banknotesplus\BankNotesPlus;
 
 use onebone\economyapi\EconomyAPI;
@@ -24,6 +26,8 @@ final class EconomyManager {
     use SingletonTrait;
 
     protected BankNotesPlus $plugin;
+
+    private ?Plugin $eco;
 
     private ?ClosureAPI $api;
     
