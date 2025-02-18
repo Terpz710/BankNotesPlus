@@ -6,9 +6,6 @@ namespace terpz710\banknotesplus;
 
 use pocketmine\plugin\PluginBase;
 
-use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerInteractEvent;
-
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\enchantment\ItemFlags;
@@ -46,31 +43,6 @@ class BankNotesPlus extends PluginBase {
 
     public static function getInstance() : self{
         return self::$instance;
-    }
-
-    public function onPlayerInteract(PlayerInteractEvent $event) : void{
-        $player = $event->getPlayer();
-        $item = $event->getItem();
-        $action = $event->getAction();
-
-        if ($action === PlayerInteractEvent::LEFT_CLICK_BLOCK || $action === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            if ($item->getNamedTag()->getTag("Amount")) {
-                $amount = $item->getNamedTag()->getInt("Amount");
-                $item->setCount($item->getCount() - 1);
-                $player->getInventory()->setItemInHand($item);
-                $this->economyManager->addMoney($player, $amount, function($success) use ($player, $amount, $event) {
-                    if ($success) {
-                        $message = $this->getConfig()->get("claim_message");
-                        $message = str_replace("{amount}", (string)$amount, $message);
-                        $player->sendMessage($message);
-                    } else {
-                        $message = $this->getConfig()->get("failure_message");
-                        $player->sendMessage($message);
-                        $event->cancel();
-                    }
-                });
-            }
-        }
     }
 
     public function convertToBankNote(Player $player, int $amount) : void{
