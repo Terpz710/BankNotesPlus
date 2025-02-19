@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace terpz710\banknotesplus\command;
 
-use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
-use pocketmine\plugin\PluginOwned;
-use pocketmine\plugin\Plugin;
 
 use pocketmine\player\Player;
 
@@ -17,55 +13,39 @@ use pocketmine\utils\TextFormat as TextColor;
 use terpz710\banknotesplus\BankNotesPlus;
 use terpz710\banknotesplus\economy\EconomyManager;
 
-class BNCommand extends Command implements PluginOwned {
+use CortexPE\Commando\BaseCommand;
+use CortexPE\Commando\args\IntegerArgument;
 
-    protected BankNotesPlus $plugin;
-    
-    protected EconomyManager $economyManager;
+class BNCommand extends BaseCommand {
 
-    public function __construct() {
-        parent::__construct("banknote");
-        $this->setDescription("Convert in-game money into bank notes");
-        $this->setUsage("/banknote <amount>");
-        $this->setAliases(["bn", "note"]);
+    protected function prepare() : void{
         $this->setPermission("banknotesplus.cmd");
-        
-        $this->plugin = BankNotesPlus::getInstance();
-        $this->economyManager = EconomyManager::getInstance();
+        $this->registerArgument(0, new IntegerArgument("amount", true));
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args) : bool{
-        if (!$this->testPermission($sender)) {
-            return true;
+    public function onRun(CommandSender $sender, string $aliasUsed, array $args) : void{
+        if (!$sender instanceof Player) {
+            $sender->sendMessage(TextColor::colorize(BankNotesPlus::getInstance()->getConfig()->get("convert_not_player_message")));
+            return;
         }
 
-        if ($sender instanceof Player) {
-            if (count($args) === 1 && is_numeric($args[0]) && $args[0] > 0) {
-                $amount = (int)$args[0];
+        if (!isset($args["amount"]) || $args["amount"] <= 0) {
+            $sender->sendMessage(TextColor::colorize(BankNotesPlus::getInstance()->getConfig()->get("convert_usage_message")));
+            return;
+        }
 
-                $this->economyManager->reduceMoney($sender, $amount, function($success) use ($sender, $amount) {
-                    if ($success) {
-                        $this->plugin->convertToBankNote($sender, $amount);
-                        $message = $this->plugin->getConfig()->get("convert_success_message");
-                        $message = str_replace("{amount}", (string)$amount, $message);
-                        $sender->sendMessage(TextColor::colorize($message));
-                    } else {
-                        $message = $this->plugin->getConfig()->get("convert_failure_message");
-                        $sender->sendMessage(TextColor::colorize($message));
-                    }
-                });
+        $amount = (int)$args["amount"];
+        $economy = EconomyManager::getInstance();
+        $plugin = BankNotesPlus::getInstance();
+
+        $economy->reduceMoney($sender, $amount, function($success) use ($sender, $amount, $plugin) {
+            if ($success) {
+                $plugin->convertToBankNote($sender, $amount);
+                $message = $plugin->getConfig()->get("convert_success_message");
+                $sender->sendMessage(TextColor::colorize(str_replace("{amount}", (string)$amount, $message)));
             } else {
-                $message = $this->plugin->getConfig()->get("convert_usage_message");
-                $sender->sendMessage(TextColor::colorize($message));
+                $sender->sendMessage(TextColor::colorize($plugin->getConfig()->get("convert_failure_message")));
             }
-        } else {
-            $message = $this->plugin->getConfig()->get("convert_not_player_message");
-            $sender->sendMessage(TextColor::colorize($message));
-        }
-        return true;
-    }
-
-    public function getOwningPlugin() : Plugin{
-        return $this->plugin;
+        });
     }
 }
