@@ -1,0 +1,14 @@
+{
+    "name": "terpz710/banknotesplus",
+    "type": "project",
+    "license": "Apache License 2.0",
+    "require": {
+        "pocketmine/pocketmine-mp": "^5.0.0-BETA4",
+        "cortexpe/commando": "^3.2.1"
+    },
+    "autoload": {
+        "psr-0": {
+            "BankNotesPlus\\": "src/BankNotesPlus"
+        }
+    }
+}
