@@ -41,7 +41,7 @@ class BankNotesPlus extends PluginBase {
             PacketHooker::register($this);
         }
         
-        $this->getServer()->getCommandMap()->register($this, "BankNotesPlus", new BNCommand("banknote", "Convert in-game money into bank notes", ["bn", "note"]));
+        $this->getServer()->getCommandMap()->register("BankNotesPlus", new BNCommand($this, "banknote", "Convert in-game money into bank notes", ["bn", "note"]));
 
         EnchantmentIdMap::getInstance()->register(
             self::FAKE_ENCH_ID,
