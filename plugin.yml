@@ -1,7 +1,7 @@
 name: BankNotesPlus
 version: 1.0.5
 author: Terpz710
-api: 5.0.0
+api: 5.3.0
 main: terpz710\banknotesplus\BankNotesPlus
 
 softdepend: ["EconomyAPI", "BedrockEconomy"]
