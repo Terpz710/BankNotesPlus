@@ -20,6 +20,8 @@ use pocketmine\utils\TextFormat as TextColor;
 
 use terpz710\banknotesplus\command\BNCommand;
 
+use CortexPE\Commando\PacketHooker;
+
 class BankNotesPlus extends PluginBase {
 
     protected static self $instance;
@@ -34,8 +36,12 @@ class BankNotesPlus extends PluginBase {
         $this->saveDefaultConfig();
         
         $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
+
+        if (!PacketHooker::isRegistered()) {
+            PacketHooker::register($this);
+        }
         
-        $this->getServer()->getCommandMap()->register("BankNotesPlus", new BNCommand());
+        $this->getServer()->getCommandMap()->register("BankNotesPlus", new BNCommand("banknote", "Convert in-game money into bank notes", ["bn", "note"]));
 
         EnchantmentIdMap::getInstance()->register(
             self::FAKE_ENCH_ID,
