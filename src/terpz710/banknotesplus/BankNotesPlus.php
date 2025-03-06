@@ -53,12 +53,12 @@ class BankNotesPlus extends PluginBase {
         return self::$instance;
     }
 
-    public function convertToBankNote(Player $player, int $amount) : void{
-        $bankNote = $this->getBankNote($amount);
+    public function convertToBankNote(Player $player, int $amount, int $quantity = 1) : void{
+        $bankNote = $this->getBankNote($quantity, $amount);
         $player->getInventory()->addItem($bankNote);
     }
 
-    private function getBankNote(int $amount) : ?Item{
+    private function getBankNote(int $amount, int $quantity = 1) : ?Item{
         $bankNote = StringToItemParser::getInstance()->parse($this->getConfig()->get("bank_note_item"));
         $customName = $this->getConfig()->get("bank_note_name");
         $customName = str_replace("{amount}", (string)$amount, $customName);
@@ -68,6 +68,7 @@ class BankNotesPlus extends PluginBase {
             return TextColor::colorize(str_replace("{amount}", (string)$amount, $line));
         }, $lore);
         $bankNote->setLore($lore);
+        $bankNote->setCount($quantity);
         $bankNote->getNamedTag()->setInt("Amount", $amount);
         $bankNote->addEnchantment(new EnchantmentInstance(EnchantmentIdMap::getInstance()->fromId(self::FAKE_ENCH_ID), 1));
         return $bankNote;
