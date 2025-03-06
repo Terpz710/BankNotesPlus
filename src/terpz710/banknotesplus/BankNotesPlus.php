@@ -54,7 +54,7 @@ class BankNotesPlus extends PluginBase {
     }
 
     public function convertToBankNote(Player $player, int $amount, int $quantity = 1) : void{
-        $bankNote = $this->getBankNote($quantity, $amount);
+        $bankNote = $this->getBankNote($amount, $quantity);
         $player->getInventory()->addItem($bankNote);
     }
 
