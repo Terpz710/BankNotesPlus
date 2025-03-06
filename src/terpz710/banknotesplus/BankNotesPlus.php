@@ -58,7 +58,7 @@ class BankNotesPlus extends PluginBase {
         $player->getInventory()->addItem($bankNote);
     }
 
-    private function getBankNote(int $amount, int $quantity = 1) : ?Item{
+    public function getBankNote(int $amount, int $quantity = 1) : ?Item{
         $bankNote = StringToItemParser::getInstance()->parse($this->getConfig()->get("bank_note_item"));
         $customName = $this->getConfig()->get("bank_note_name");
         $customName = str_replace("{amount}", (string)$amount, $customName);
